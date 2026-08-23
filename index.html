@@ -113,7 +113,7 @@
 
   <div class="max-w-md mx-auto min-h-screen flex flex-col relative safe-bottom">
     
-    <!-- Header -->
+    <!-- 頂部 Header -->
     <header class="p-5 pt-8 pb-3 bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-warmGray-200/50">
       <div class="flex items-center justify-between">
         <div>
@@ -121,7 +121,7 @@
             <i data-lucide="sparkles" class="w-3 h-3"></i> 泰熱情 · 曼谷好物散策
           </span>
           <h1 class="text-xl font-bold text-warmGray-dark tracking-tight">曼谷自由行 🐘</h1>
-          <p class="text-[11px] text-warmGray font-medium mt-0.5">Bangkok City Tour · 5 日精選旅程</p>
+          <p class="text-[11px] text-warmGray font-medium mt-0.5">10/28 - 11/01 · 5 日精選旅程</p>
         </div>
         <div class="w-11 h-11 rounded-2xl bg-bkk-light border border-bkk/20 shadow-inner flex items-center justify-center text-xl">
           🛺
@@ -129,7 +129,7 @@
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- 主要內容區 -->
     <main class="flex-1 px-4 pt-4 space-y-4">
 
       <!-- ================= TAB 1: 行程頁 ================= -->
@@ -142,41 +142,95 @@
         </button>
       </section>
 
-      <!-- ================= TAB 2: AI 小幫手 ================= -->
+      <!-- ================= TAB 2: 待買清單頁 (Wishlist) ================= -->
+      <section id="tab-wishlist" class="tab-pane hidden space-y-4">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-100">Shopping Wishlist</span>
+              <h2 class="text-lg font-bold mt-0.5">曼谷必買清單 🛍️</h2>
+              <p class="text-[11px] text-amber-100 mt-1 leading-relaxed">紀錄必買伴手禮、美妝零食，購買後打勾標記！</p>
+            </div>
+            <span class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold" id="wishlist-progress-badge">0 / 0 已買</span>
+          </div>
+        </div>
+
+        <!-- 手動新增待買項目 -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-amber-500"></i> 新增待買物品
+          </h3>
+          <div class="space-y-2.5">
+            <div class="flex gap-2">
+              <input type="text" id="wish-input-name" placeholder="商品名稱 (例: 手標泰奶茶包、鼻通)" class="flex-1 text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-amber-500" />
+              <select id="wish-input-cat" class="text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-amber-500">
+                <option value="🎁 伴手禮">🎁 伴手禮</option>
+                <option value="💄 美妝保養">💄 美妝保養</option>
+                <option value="🍫 零食泡麵">🍫 零食泡麵</option>
+                <option value="👗 服飾包包">👗 服飾包包</option>
+                <option value="✨ 其他好物">✨ 其他好物</option>
+              </select>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="wish-input-note" placeholder="備註/預算 (例: Big C 買 5 罐、約 150 泰銖)" class="flex-1 text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-amber-500" />
+              <button onclick="addWishlistItem()" class="px-5 py-2.5 bg-amber-500 text-white rounded-2xl font-bold text-xs shadow-sm hover:bg-amber-600 transition-all active:scale-95 flex items-center gap-1">
+                加入
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 清單列表 -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
+            <h3 class="font-bold text-xs text-warmGray-dark">購物清單明細</h3>
+            <button onclick="clearCompletedWishlist()" class="text-[10px] text-warmGray hover:text-red-500">清除已完成項目</button>
+          </div>
+          <div id="wishlist-container" class="space-y-2">
+            <!-- 由 JS 動態注入 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: AI 小幫手 ================= -->
       <section id="tab-ai" class="tab-pane hidden space-y-4">
-        <!-- AI 功能卡片 -->
         <div class="bg-gradient-to-r from-bkk to-bkk-dark rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
           <div class="flex justify-between items-start">
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-bkk-light">AI Travel Assistant</span>
-              <h2 class="text-lg font-bold mt-0.5">曼谷行程智慧解析小幫手 ✨</h2>
-              <p class="text-[11px] text-bkk-light mt-1 leading-relaxed">把小紅書、旅行社訂單或朋友傳的文字貼在下方，AI 會自動辨識並幫您寫入行程頁！</p>
+              <h2 class="text-lg font-bold mt-0.5">曼谷行程 & 待買清單智慧小幫手 ✨</h2>
+              <p class="text-[11px] text-bkk-light mt-1 leading-relaxed">貼上行程文字自動排入日程；貼上購物清單自動匯入待買頁！</p>
             </div>
             <span class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold">AI 智慧</span>
           </div>
         </div>
 
-        <!-- 貼上文字輸入框 -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
-              <i data-lucide="bot" class="w-4 h-4 text-bkk"></i> 貼上行程文字
+              <i data-lucide="bot" class="w-4 h-4 text-bkk"></i> 告訴 AI 行程或待買商品
             </h3>
-            <span class="text-[10px] text-warmGray">自動辨識時間與景點</span>
+            <span class="text-[10px] text-warmGray">自動識別分流</span>
           </div>
 
-          <textarea id="ai-input-text" rows="5" placeholder="例如：
-Day 2
-10:00 鄭王廟 (黎明寺) 拍泰服體驗
-13:30 Siam Paragon 暹羅百麗宮吃泰奶冰
-18:00 Jodd Fairs 喬德夜市吃火山排骨" class="w-full text-xs p-3 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk leading-relaxed"></textarea>
+          <textarea id="ai-input-text" rows="5" placeholder="可貼上行程或待買商品，例如：
+
+【行程範例】：
+Day 2 10:00 鄭王廟拍泰服
+14:00 Siam Paragon 吃冰
+
+【待買範例】：
+幫我加待買清單：
+1. 泰國皇家蜂蜜 5條
+2. 小老闆海苔 3包
+3. Counterpain 酸痛藥膏" class="w-full text-xs p-3 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk leading-relaxed"></textarea>
 
           <div class="flex items-center justify-between pt-1">
             <div class="flex items-center gap-2">
-              <label class="text-[11px] font-bold text-warmGray-dark">指定匯入至：</label>
+              <label class="text-[11px] font-bold text-warmGray-dark">行程指定天數：</label>
               <select id="ai-target-day" class="text-xs p-1.5 rounded-xl bg-warmGray-100 border border-warmGray-200 font-bold text-bkk focus:outline-none">
-                <option value="auto">🤖 自動辨識天數</option>
-                <option value="1">Day 1 · 抵達曼谷</option>
+                <option value="auto">🤖 自動辨識</option>
+                <option value="1">Day 1 · 入住夜市</option>
                 <option value="2">Day 2 · 老城經典</option>
                 <option value="3">Day 3 · 潮流商圈</option>
                 <option value="4">Day 4 · 水上市場</option>
@@ -189,24 +243,23 @@ Day 2
           </div>
         </div>
 
-        <!-- AI 解析記錄 -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
           <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
             <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
-              <i data-lucide="history" class="w-3.5 h-3.5 text-bkk"></i> 最近解析加入的景點
+              <i data-lucide="history" class="w-3.5 h-3.5 text-bkk"></i> 最近解析處理結果
             </h3>
             <span class="text-[10px] text-warmGray" id="ai-status-badge">隨時待命</span>
           </div>
           <div id="ai-result-list" class="text-xs text-warmGray space-y-2">
             <div class="text-center py-6 text-warmGray/70">
               <span class="text-2xl block mb-1">📋</span>
-              貼上任何行程文字，點擊「開始解析」即可自動匯入！
+              貼上行程或購物文字，點擊「開始解析」即可自動匯入！
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 3: 記帳頁 ================= -->
+      <!-- ================= TAB 4: 記帳頁 ================= -->
       <section id="tab-expense" class="tab-pane hidden space-y-4">
         <div class="bg-gradient-to-r from-siam to-siam-dark rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
           <div class="flex justify-between items-start">
@@ -227,12 +280,12 @@ Day 2
             <div class="flex gap-2">
               <input type="text" id="exp-name" placeholder="項目名稱 (例: 泰式按摩、火山排骨)" class="flex-1 text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-siam" />
               <select id="exp-cat" class="text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-siam">
+                <option value="🏨 酒店住宿">🏨 酒店住宿</option>
                 <option value="🍱 餐飲美食">🍱 餐飲美食</option>
                 <option value="💆 泰式按摩">💆 泰式按摩</option>
                 <option value="🛒 逛街夜市">🛒 逛街夜市</option>
                 <option value="🛺 交通Grab">🛺 交通Grab</option>
                 <option value="🎟️ 門票活動">🎟️ 門票活動</option>
-                <option value="🏨 酒店住宿">🏨 酒店住宿</option>
               </select>
             </div>
             <div class="flex gap-2 items-center">
@@ -258,60 +311,130 @@ Day 2
 
     </main>
 
-    <!-- 底部導覽列 (3 Tabs) -->
-    <nav class="fixed bottom-5 left-4 right-4 max-w-sm mx-auto bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg shadow-warmGray/10 border border-warmGray-200/80 flex items-center justify-around z-50">
-      <button onclick="switchTab('itinerary')" id="nbtn-itinerary" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-bkk font-bold transition-all">
-        <i data-lucide="map-pin" class="w-5 h-5"></i>
+    <!-- 底部導覽列 (4 Tabs) -->
+    <nav class="fixed bottom-5 left-3 right-3 max-w-sm mx-auto bg-white/90 backdrop-blur-md rounded-full px-3 py-2 shadow-lg shadow-warmGray/10 border border-warmGray-200/80 flex items-center justify-around z-50">
+      <button onclick="switchTab('itinerary')" id="nbtn-itinerary" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-full text-bkk font-bold transition-all">
+        <i data-lucide="map-pin" class="w-4 h-4"></i>
         <span class="text-[10px]">行程</span>
       </button>
-      <button onclick="switchTab('ai')" id="nbtn-ai" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-warmGray font-medium transition-all">
-        <i data-lucide="sparkles" class="w-5 h-5"></i>
+      <button onclick="switchTab('wishlist')" id="nbtn-wishlist" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-full text-warmGray font-medium transition-all">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        <span class="text-[10px]">待買清單</span>
+      </button>
+      <button onclick="switchTab('ai')" id="nbtn-ai" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-full text-warmGray font-medium transition-all">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
         <span class="text-[10px]">AI小幫手</span>
       </button>
-      <button onclick="switchTab('expense')" id="nbtn-expense" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-warmGray font-medium transition-all">
-        <i data-lucide="wallet" class="w-5 h-5"></i>
+      <button onclick="switchTab('expense')" id="nbtn-expense" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-full text-warmGray font-medium transition-all">
+        <i data-lucide="wallet" class="w-4 h-4"></i>
         <span class="text-[10px]">記帳</span>
       </button>
     </nav>
 
   </div>
 
+  <!-- 新增景點 Modal -->
+  <div id="add-spot-modal" class="fixed inset-0 bg-warmGray-dark/50 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-5 space-y-3.5 shadow-2xl animate-fade-in">
+      <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
+        <h3 class="font-bold text-sm text-warmGray-dark">新增自訂景點 / 美食</h3>
+        <button onclick="closeAddSpotModal()" class="text-warmGray hover:text-warmGray-dark text-lg font-bold">✕</button>
+      </div>
+
+      <div class="space-y-2.5">
+        <div>
+          <label class="text-[11px] font-bold text-warmGray-dark block mb-1">景點/餐廳名稱 *</label>
+          <input type="text" id="new-spot-name" placeholder="例如：建興酒家 咖哩炒蟹" class="w-full text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[11px] font-bold text-warmGray-dark block mb-1">分類</label>
+            <select id="new-spot-cat" class="w-full text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk">
+              <option value="美食">🍱 美食</option>
+              <option value="景點">📸 景點</option>
+              <option value="購物">🛒 購物</option>
+              <option value="活動">✨ 活動</option>
+              <option value="交通">🚆 交通</option>
+              <option value="酒店">🏨 酒店</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-warmGray-dark block mb-1">強打標籤 (選填)</label>
+            <input type="text" id="new-spot-tag" placeholder="例如：必吃咖哩螃蟹" class="w-full text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk" />
+          </div>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-warmGray-dark block mb-1">詳細說明 / 備註</label>
+          <textarea id="new-spot-desc" rows="2" placeholder="詳細描述或必點料理..." class="w-full text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeAddSpotModal()" class="flex-1 py-2.5 bg-warmGray-100 text-warmGray font-bold text-xs rounded-2xl">取消</button>
+        <button onclick="saveCustomSpot()" class="flex-1 py-2.5 bg-bkk text-white font-bold text-xs rounded-2xl shadow-sm">確認加入</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 預設曼谷 5 天精選行程基礎資料 (含 GPS 座標與特色景點)
     const BANGKOK_BASE_ITINERARY = [
       {
         day: 1,
-        date: "Day 1",
-        location: "素萬那普 ➔ 曼谷市區",
-        mapQuery: "Bangkok, Thailand",
-        title: "抵達天使之城 · 啟程曼谷",
+        date: "10/28 (Wed)",
+        location: "吉隆坡 ➔ 曼谷",
+        mapQuery: "Bangkok City Suite Hotel",
+        title: "飛抵曼谷 · 入住市區飯店 · 喬德夜市",
         weather: {
-          temp: "27°C ~ 33°C",
-          desc: "熱情陽光 · 午後偶陣雨",
-          pop: "30%",
+          temp: "26°C ~ 32°C",
+          desc: "氣候溫暖 · 適合夜市散策",
+          pop: "20%",
           icon: "🌤️"
+        },
+        flight: {
+          type: "去程航班 🛫",
+          airline: "馬來西亞航空 Malaysia Airlines · MH782",
+          code: "FGO57R",
+          depTime: "14:50",
+          depDate: "10月28日 (週三)",
+          depAirport: "吉隆坡國際機場 T1 (KUL)",
+          arrTime: "16:05",
+          arrDate: "10月28日 (週三)",
+          arrAirport: "曼谷素萬那普機場 (BKK)",
+          duration: "2小時 15分鐘",
+          notes: "訂位代號：FGO57R / 請於起飛前 2 小時抵達機場"
+        },
+        hotel: {
+          name: "曼谷城市套房飯店 (Bangkok City Suite Hotel)",
+          thaiName: "โรงแรมบางกอกซิตี้ สวีท",
+          type: "標準雙人房 · 1 間",
+          duration: "10 月 28 日 – 11 月 1 日 (4 晚)",
+          mapQuery: "Bangkok+City+Suite+Hotel",
+          lat: 13.7589,
+          lng: 100.5218
         },
         spots: [
           {
             id: "bkk_1_1",
+            time: "16:05",
             category: "交通",
             catColor: "bg-blue-100 text-blue-700",
             icon: "✈️",
-            name: "素萬那普國際機場 (BKK) ➔ 市區飯店",
-            desc: "飛抵曼谷 BKK 機場，辦理出關後至 1 樓搭乘計程車或 Grab 前往曼谷市區飯店 Check-in 休息。",
-            tags: [{ type: "buy", text: "必辦泰國 5G 吃到飽網卡" }],
-            mapQuery: "Suvarnabhumi+Airport",
-            lat: 13.6900,
-            lng: 100.7501,
-            transitNext: "搭乘機場快線 ARL 直達市區轉乘 BTS 捷運 (約 40 分鐘)"
+            name: "素萬那普機場 (BKK) ➔ 曼谷城市套房飯店",
+            desc: "16:05 降落曼谷素萬那普機場，出關領取行李後，搭乘機場快線 ARL 或預約 Grab 前往「曼谷城市套房飯店」辦理入住手續。",
+            tags: [{ type: "buy", text: "出關領取泰國 5G 網卡" }],
+            mapQuery: "Bangkok+City+Suite+Hotel",
+            lat: 13.7589,
+            lng: 100.5218,
+            transitNext: "搭乘 MRT 或計程車前往 Jodd Fairs 喬德夜市 (約 15 分鐘)"
           },
           {
             id: "bkk_1_2",
+            time: "18:30",
             category: "活動",
             catColor: "bg-purple-100 text-purple-700",
             icon: "🌃",
             name: "Jodd Fairs 喬德夜市 (拉瑪九)",
-            desc: "曼谷最具人氣的當紅文青夜市！必吃酸辣濃郁的巨無霸火山排骨、手抓海鮮與水果西施冰沙。",
+            desc: "曼谷最具人氣的當紅文青夜市！必吃酸辣濃郁的巨無霸火山排骨、手抓海鮮、脆皮煎餅與新鮮現剖椰子冰沙。",
             tags: [
               { type: "eat", text: "必吃酸辣巨無霸火山排骨" },
               { type: "eat", text: "必喝新鮮現剖泰國椰子水" }
@@ -324,14 +447,14 @@ Day 2
       },
       {
         day: 2,
-        date: "Day 2",
+        date: "10/29 (Thu)",
         location: "昭披耶河畔 · 老城區",
         mapQuery: "Wat Arun, Bangkok",
         title: "老城古蹟巡禮 · 泰服體驗 · 水上交通船",
         weather: {
-          temp: "28°C ~ 34°C",
+          temp: "27°C ~ 33°C",
           desc: "晴朗高溫 · 注意防曬遮陽",
-          pop: "20%",
+          pop: "15%",
           icon: "☀️"
         },
         spots: [
@@ -383,14 +506,14 @@ Day 2
       },
       {
         day: 3,
-        date: "Day 3",
+        date: "10/30 (Fri)",
         location: "暹羅商圈 · 市中心",
         mapQuery: "Siam Paragon, Bangkok",
         title: "潮流暹羅商圈 · 四面佛祈福 · 頂級泰式按摩",
         weather: {
           temp: "27°C ~ 33°C",
           desc: "多雲舒適 · 適合室內逛街",
-          pop: "25%",
+          pop: "20%",
           icon: "⛅"
         },
         spots: [
@@ -439,7 +562,7 @@ Day 2
       },
       {
         day: 4,
-        date: "Day 4",
+        date: "10/31 (Sat)",
         location: "丹嫩莎朵 · 美功",
         mapQuery: "Damnoen Saduak, Thailand",
         title: "美功鐵道市場 · 丹嫩莎朵手搖手划船",
@@ -482,14 +605,14 @@ Day 2
       },
       {
         day: 5,
-        date: "Day 5",
+        date: "11/01 (Sun)",
         location: "洽圖洽 ➔ 返台",
         mapQuery: "Chatuchak Weekend Market",
-        title: "洽圖洽週末市集 · Big C 伴手禮大採購 · 溫暖賦歸",
+        title: "洽圖洽週末市集 · Big C 伴手禮大採購 · 賦歸",
         weather: {
-          temp: "28°C ~ 34°C",
+          temp: "27°C ~ 33°C",
           desc: "午後晴朗微風 · 適合採買",
-          pop: "20%",
+          pop: "15%",
           icon: "🌤️"
         },
         spots: [
@@ -523,32 +646,41 @@ Day 2
             mapQuery: "Big+C+Supercenter+Rajdamri",
             lat: 13.7468,
             lng: 100.5402,
-            transitNext: "搭乘計程車直達素萬那普 (BKK) 機場搭機返台"
+            transitNext: "搭乘計程車前往素萬那普 (BKK) 機場搭機返台"
           }
         ]
       }
     ];
 
+    // 預設必買清單
+    const DEFAULT_WISHLIST = [
+      { id: "w_1", name: "手標泰式紅茶包 (ChaTraMue 金罐/紅罐)", cat: "🎁 伴手禮", note: "Big C / 經典泰奶必備", done: false },
+      { id: "w_2", name: "Gentlewoman 經典帆布托特包", cat: "👗 服飾包包", note: "Siam Square 旗艦店購入", done: false },
+      { id: "w_3", name: "泰國皇家蜂蜜 (軟管裝) & 牛奶片", cat: "🍫 零食泡麵", note: "7-11 或 Big C 買 10 條送朋友", done: false },
+      { id: "w_4", name: "Counterpain 酸痛舒緩按摩軟膏 (溫熱型)", cat: "💄 美妝保養", note: "屈臣氏 / Boots 藥妝店", done: false }
+    ];
+
     let currentDay = 1;
-    const THB_RATE = 0.95; // 泰銖換台幣參考匯率
+    const THB_RATE = 0.95;
     let currentLeafletMap = null;
     let sortableInstance = null;
 
     function initApp() {
       renderDayTabs();
       renderDayContent(1);
+      renderWishlist();
       renderExpenses();
       lucide.createIcons();
     }
 
     function getItineraryData() {
-      const saved = JSON.parse(localStorage.getItem('bangkok_itinerary_data_v1') || 'null');
+      const saved = JSON.parse(localStorage.getItem('bangkok_itinerary_data_v3') || 'null');
       if (saved) return saved;
       return BANGKOK_BASE_ITINERARY;
     }
 
     function saveItineraryData(data) {
-      localStorage.setItem('bangkok_itinerary_data_v1', JSON.stringify(data));
+      localStorage.setItem('bangkok_itinerary_data_v3', JSON.stringify(data));
     }
 
     function renderDayTabs() {
@@ -568,7 +700,7 @@ Day 2
       const data = allData.find(d => d.day === dayNum);
       const container = document.getElementById('day-content-container');
 
-      // 每日專屬氣候卡片
+      // 氣候卡片
       let weatherHTML = '';
       if (data.weather) {
         weatherHTML = `
@@ -586,6 +718,85 @@ Day 2
             <div class="text-right border-l border-warmGray-100 pl-3">
               <span class="text-[10px] text-warmGray block">降雨機率</span>
               <span class="text-xs font-bold text-warmGray-dark">${data.weather.pop}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // 航班卡片 (Day 1)
+      let flightHTML = '';
+      if (data.flight) {
+        flightHTML = `
+          <div class="bg-gradient-to-br from-white to-bkk-light/40 rounded-3xl p-5 shadow-sm border border-bkk/30 space-y-3 relative overflow-hidden">
+            <div class="flex justify-between items-center pb-2 border-b border-warmGray-200/60">
+              <span class="text-xs font-bold text-bkk bg-bkk-light px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i data-lucide="plane" class="w-3.5 h-3.5"></i> ${data.flight.type}
+              </span>
+              <span class="text-[11px] font-mono font-bold text-warmGray-dark bg-warmGray-100 px-2 py-0.5 rounded-lg">代號: ${data.flight.code}</span>
+            </div>
+
+            <div class="text-xs font-bold text-warmGray-dark">${data.flight.airline}</div>
+
+            <div class="grid grid-cols-3 items-center text-center py-2 bg-white/80 rounded-2xl border border-warmGray-100">
+              <div>
+                <div class="text-xl font-bold text-warmGray-dark">${data.flight.depTime}</div>
+                <div class="text-[10px] text-warmGray font-medium mt-0.5">${data.flight.depAirport.split(' (')[0]}</div>
+                <div class="text-[9px] text-warmGray/70">T1 航廈</div>
+              </div>
+
+              <div class="flex flex-col items-center">
+                <span class="text-[10px] text-bkk font-bold">${data.flight.duration}</span>
+                <div class="w-full flex items-center justify-center my-1">
+                  <div class="h-[1.5px] bg-bkk/40 w-12 relative">
+                    <i data-lucide="plane" class="w-3 h-3 text-bkk absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-90"></i>
+                  </div>
+                </div>
+                <span class="text-[9px] text-warmGray">直飛</span>
+              </div>
+
+              <div>
+                <div class="text-xl font-bold text-warmGray-dark">${data.flight.arrTime}</div>
+                <div class="text-[10px] text-warmGray font-medium mt-0.5">${data.flight.arrAirport.split(' (')[0]}</div>
+                <div class="text-[9px] text-warmGray/70">素萬那普</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-[10px] text-warmGray bg-bkk-light/50 p-2 rounded-xl">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-bkk flex-shrink-0"></i>
+              <span><b>備註：</b>${data.flight.notes}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // 飯店卡片 (Day 1)
+      let hotelHTML = '';
+      if (data.hotel) {
+        hotelHTML = `
+          <div class="bg-gradient-to-br from-white to-amber-50/50 rounded-3xl p-5 shadow-sm border border-amber-200/70 space-y-2.5">
+            <div class="flex justify-between items-center pb-2 border-b border-amber-200/40">
+              <span class="text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <i data-lucide="hotel" class="w-3.5 h-3.5"></i> 曼谷住宿確認
+              </span>
+              <a href="https://maps.google.com/?q=${encodeURIComponent(data.hotel.mapQuery)}" target="_blank" class="text-[11px] font-bold text-bkk bg-bkk-light px-2.5 py-1 rounded-full border border-bkk/20 flex items-center gap-1">
+                <i data-lucide="navigation" class="w-3 h-3"></i> 導航
+              </a>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-bold text-warmGray-dark">${data.hotel.name}</h3>
+              <p class="text-[11px] text-warmGray mt-0.5">${data.hotel.thaiName}</p>
+            </div>
+
+            <div class="bg-white/80 p-3 rounded-2xl border border-amber-100 space-y-1 text-[11px]">
+              <div class="flex items-center justify-between">
+                <span class="text-warmGray">房型：</span>
+                <span class="font-bold text-warmGray-dark">${data.hotel.type}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-warmGray">入住時間：</span>
+                <span class="font-bold text-warmGray-dark">${data.hotel.duration}</span>
+              </div>
             </div>
           </div>
         `;
@@ -671,6 +882,8 @@ Day 2
         </div>
 
         ${weatherHTML}
+        ${flightHTML}
+        ${hotelHTML}
 
         <div class="flex items-center justify-between px-1 text-[11px] text-warmGray">
           <span class="flex items-center gap-1"><i data-lucide="hand" class="w-3.5 h-3.5 text-bkk"></i> 按住 <b>☰</b> 可上下拖曳換順序</span>
@@ -791,24 +1004,165 @@ Day 2
       renderDayContent(dayNum);
     }
 
-    // ================= AI 小幫手智慧解析邏輯 =================
+    // ================= 待買清單 (Wishlist) 功能 =================
+    function getWishlist() {
+      return JSON.parse(localStorage.getItem('bangkok_wishlist_v1') || JSON.stringify(DEFAULT_WISHLIST));
+    }
+
+    function saveWishlist(list) {
+      localStorage.setItem('bangkok_wishlist_v1', JSON.stringify(list));
+      renderWishlist();
+    }
+
+    function addWishlistItem() {
+      const name = document.getElementById('wish-input-name').value.trim();
+      const cat = document.getElementById('wish-input-cat').value;
+      const note = document.getElementById('wish-input-note').value.trim();
+
+      if (!name) {
+        alert('請輸入商品名稱！');
+        return;
+      }
+
+      const list = getWishlist();
+      list.unshift({
+        id: "w_" + Date.now(),
+        name: name,
+        cat: cat,
+        note: note || "曼谷必買好物",
+        done: false
+      });
+
+      saveWishlist(list);
+      document.getElementById('wish-input-name').value = '';
+      document.getElementById('wish-input-note').value = '';
+    }
+
+    function toggleWishlist(id) {
+      const list = getWishlist();
+      const item = list.find(i => i.id === id);
+      if (item) {
+        item.done = !item.done;
+        saveWishlist(list);
+      }
+    }
+
+    function deleteWishlist(id) {
+      let list = getWishlist();
+      list = list.filter(i => i.id !== id);
+      saveWishlist(list);
+    }
+
+    function clearCompletedWishlist() {
+      let list = getWishlist();
+      list = list.filter(i => !i.done);
+      saveWishlist(list);
+    }
+
+    function renderWishlist() {
+      const list = getWishlist();
+      const container = document.getElementById('wishlist-container');
+      const badge = document.getElementById('wishlist-progress-badge');
+
+      const doneCount = list.filter(i => i.done).length;
+      badge.innerText = `${doneCount} / ${list.length} 已買`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-warmGray text-xs">
+            <span class="text-2xl block mb-1">🛒</span>
+            目前待買清單空空如也，趕快新增必買伴手禮吧！
+          </div>
+        `;
+      } else {
+        container.innerHTML = list.map(item => `
+          <div class="flex items-center justify-between p-3 rounded-2xl ${item.done ? 'bg-warmGray-100/40 opacity-60' : 'bg-warmGray-100/70'} border border-warmGray-200/50 transition-all">
+            <div class="flex items-center gap-3 flex-1">
+              <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleWishlist('${item.id}')" class="w-4 h-4 rounded text-amber-500 focus:ring-0 cursor-pointer" />
+              <div>
+                <div class="text-xs font-bold ${item.done ? 'line-through text-warmGray' : 'text-warmGray-dark'}">${item.name}</div>
+                <div class="text-[10px] text-warmGray flex items-center gap-1.5 mt-0.5">
+                  <span class="bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-medium">${item.cat}</span>
+                  ${item.note ? `<span>· ${item.note}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <button onclick="deleteWishlist('${item.id}')" class="text-warmGray/40 hover:text-red-500 p-1 text-xs">✕</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ================= AI 小幫手智慧解析邏輯 (支援 行程 + 待買清單 自動分流) =================
     function processAIInput() {
       const rawText = document.getElementById('ai-input-text').value.trim();
       const targetDayVal = document.getElementById('ai-target-day').value;
 
       if (!rawText) {
-        alert('請先貼上行程文字！');
+        alert('請先輸入或貼上文字！');
         return;
       }
 
-      const allData = getItineraryData();
+      const isWishlistIntent = /買|購物|伴手禮|清單|代購|必買|帶回|購入/i.test(rawText);
       const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
+      // 情境 A：若是待買清單意圖
+      if (isWishlistIntent && !/Day|D1|D2|D3|D4|D5|第.*天/i.test(rawText)) {
+        let addedWishes = [];
+        const currentWishes = getWishlist();
+
+        lines.forEach(line => {
+          let cleanItem = line.replace(/^(幫我加待買清單|待買清單|必買|代購|買|請加|清單|：|:|\d+[\.\、\-\s])+/gi, '').trim();
+          if (cleanItem.length < 2) return;
+
+          let cat = "🎁 伴手禮";
+          if (/包|裙|衣服|褲|鞋|Gentlewoman/i.test(cleanItem)) cat = "👗 服飾包包";
+          else if (/海苔|糖|乾|零食|泡麵|蜂蜜|牛奶片|蝦餅/i.test(cleanItem)) cat = "🍫 零食泡麵";
+          else if (/膏|藥|美妝|面膜|唇膏|精油|吸鼻|薄荷/i.test(cleanItem)) cat = "💄 美妝保養";
+
+          const newObj = {
+            id: "w_ai_" + Date.now() + "_" + Math.random().toString(36).substr(2, 3),
+            name: cleanItem,
+            cat: cat,
+            note: "AI 小幫手自動加入",
+            done: false
+          };
+
+          currentWishes.unshift(newObj);
+          addedWishes.push(newObj);
+        });
+
+        if (addedWishes.length > 0) {
+          saveWishlist(currentWishes);
+          document.getElementById('ai-status-badge').innerText = `已加入 ${addedWishes.length} 個待買商品`;
+          document.getElementById('ai-status-badge').className = "text-[10px] text-amber-600 font-bold bg-amber-100 px-2 py-0.5 rounded-full";
+
+          const resultContainer = document.getElementById('ai-result-list');
+          resultContainer.innerHTML = addedWishes.map(w => `
+            <div class="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50 border border-amber-200">
+              <div class="flex items-center gap-2">
+                <span>🛍️</span>
+                <div>
+                  <div class="font-bold text-warmGray-dark">${w.name}</div>
+                  <span class="text-[10px] text-amber-800">${w.cat} · 待買清單</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-amber-600">✓ 已寫入清單</span>
+            </div>
+          `).join('');
+
+          document.getElementById('ai-input-text').value = '';
+          alert(`🎉 成功幫您將 ${addedWishes.length} 項商品加入至「待買清單」！`);
+          return;
+        }
+      }
+
+      // 情境 B：解析為行程景點
+      const allData = getItineraryData();
       let targetDay = targetDayVal === 'auto' ? 1 : parseInt(targetDayVal);
       let parsedSpots = [];
 
       lines.forEach(line => {
-        // 檢查是否包含天數標記 (如 Day 1, D2, 第一天)
         const dayMatch = line.match(/(?:Day|D|第)\s*([1-5一二三四五])/i);
         if (dayMatch && targetDayVal === 'auto') {
           let d = dayMatch[1];
@@ -817,18 +1171,15 @@ Day 2
           return;
         }
 
-        // 提取時間 (如 10:00, 14:30)
         let time = '';
         const timeMatch = line.match(/(\d{1,2}:\d{2})/);
         if (timeMatch) {
           time = timeMatch[1];
         }
 
-        // 清理標題名稱
         let cleanName = line.replace(/(\d{1,2}:\d{2})/, '').replace(/^[0-9\.\-\–\s、]+/,'').trim();
         if (cleanName.length < 2) return;
 
-        // 分類與圖示判斷
         let category = '景點';
         let catColor = 'bg-purple-100 text-purple-700';
         let icon = '📸';
@@ -837,7 +1188,7 @@ Day 2
           category = '美食';
           catColor = 'bg-rose-100 text-rose-700';
           icon = '🍱';
-        } else if (/買|市集|商場|Paragon|Icon|Big C|購物|Central/i.test(cleanName)) {
+        } else if (/市集|商場|Paragon|Icon|Big C|購物|Central|夜市/i.test(cleanName)) {
           category = '購物';
           catColor = 'bg-amber-100 text-amber-700';
           icon = '🛒';
@@ -851,7 +1202,6 @@ Day 2
           icon = '🚆';
         }
 
-        // 自動推算曼谷合理經緯度 (圍繞市中心微幅隨機偏移)
         const baseLat = 13.7563 + (Math.random() - 0.5) * 0.04;
         const baseLng = 100.5018 + (Math.random() - 0.5) * 0.04;
 
@@ -874,16 +1224,14 @@ Day 2
       });
 
       if (parsedSpots.length === 0) {
-        alert('未能識別出景點，請確認貼上的文字格式！');
+        alert('未能識別出景點或待買項目，請換個方式輸入！');
         return;
       }
 
-      // 將解析出的景點加入目標天數
       const targetDayObj = allData.find(d => d.day === targetDay) || allData[0];
       targetDayObj.spots.push(...parsedSpots);
       saveItineraryData(allData);
 
-      // 更新 AI 記錄 UI
       document.getElementById('ai-status-badge').innerText = `成功加入 ${parsedSpots.length} 個行程`;
       document.getElementById('ai-status-badge').className = "text-[10px] text-bkk font-bold bg-bkk-light px-2 py-0.5 rounded-full";
 
@@ -907,7 +1255,16 @@ Day 2
 
     // ================= 泰銖記帳功能 =================
     function getExpenses() {
-      return JSON.parse(localStorage.getItem('bangkok_expenses') || '[]');
+      const defaultExpenses = [
+        {
+          id: 1001,
+          name: "曼谷城市套房飯店 (4晚住宿)",
+          cat: "🏨 酒店住宿",
+          amount: 3305,
+          time: "已預付"
+        }
+      ];
+      return JSON.parse(localStorage.getItem('bangkok_expenses_v3') || JSON.stringify(defaultExpenses));
     }
 
     function addExpense() {
@@ -929,7 +1286,7 @@ Day 2
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
 
-      localStorage.setItem('bangkok_expenses', JSON.stringify(expenses));
+      localStorage.setItem('bangkok_expenses_v3', JSON.stringify(expenses));
       document.getElementById('exp-name').value = '';
       document.getElementById('exp-amount').value = '';
       renderExpenses();
@@ -937,7 +1294,7 @@ Day 2
 
     function deleteExpense(id) {
       const expenses = getExpenses().filter(e => e.id !== id);
-      localStorage.setItem('bangkok_expenses', JSON.stringify(expenses));
+      localStorage.setItem('bangkok_expenses_v3', JSON.stringify(expenses));
       renderExpenses();
     }
 
@@ -1012,7 +1369,7 @@ Day 2
 
       let catColor = 'bg-emerald-100 text-emerald-700';
       let icon = '✨';
-      if (cat === '食物') { catColor = 'bg-rose-100 text-rose-700'; icon = '🍱'; }
+      if (cat === '美食') { catColor = 'bg-rose-100 text-rose-700'; icon = '🍱'; }
       if (cat === '景點') { catColor = 'bg-purple-100 text-purple-700'; icon = '📸'; }
       if (cat === '購物') { catColor = 'bg-amber-100 text-amber-700'; icon = '🛒'; }
       if (cat === '交通') { catColor = 'bg-blue-100 text-blue-700'; icon = '🚆'; }
@@ -1031,7 +1388,7 @@ Day 2
         icon: icon,
         name: name,
         desc: desc || '旅人自訂推薦打卡點',
-        tags: tagText ? [{ type: cat === '食物' ? 'eat' : 'buy', text: tagText }] : [],
+        tags: tagText ? [{ type: cat === '美食' ? 'eat' : 'buy', text: tagText }] : [],
         mapQuery: name + ", Bangkok",
         lat: refLat,
         lng: refLng,
@@ -1045,7 +1402,6 @@ Day 2
       renderDayContent(currentDay);
     }
 
-    // 切換底部主要 Tab
     function switchTab(tabKey) {
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
       document.getElementById(`tab-${tabKey}`).classList.remove('hidden');
@@ -1065,6 +1421,8 @@ Day 2
         if (currentLeafletMap) {
           setTimeout(() => { currentLeafletMap.invalidateSize(); }, 200);
         }
+      } else if (tabKey === 'wishlist') {
+        renderWishlist();
       }
     }
 
