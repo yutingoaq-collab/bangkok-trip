@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>曼谷潮流自由行 🇹🇭</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Leaflet 開源地圖 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- SortableJS 拖曳套件 -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            maru: ['"Zen Maru Gothic"', 'sans-serif'],
+          },
+          colors: {
+            bkk: {
+              light: '#FFF0F5',
+              soft: '#F48FB1',
+              DEFAULT: '#E91E63',
+              dark: '#AD1457',
+            },
+            siam: {
+              light: '#E0F2F1',
+              DEFAULT: '#00897B',
+              dark: '#004D40'
+            },
+            snow: '#FAF9F6',
+            warmGray: {
+              100: '#F5F5F3',
+              200: '#E6E4DF',
+              300: '#D3D0C8',
+              DEFAULT: '#75726D',
+              dark: '#3A3835'
+            },
+            tag: {
+              eat: '#FF5722',
+              buy: '#FF9800',
+              photo: '#00BFA5',
+              massage: '#9C27B0'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bkk-pattern {
+      background-color: #FAF9F6;
+      background-image: radial-gradient(#E91E63 0.65px, transparent 0.65px), radial-gradient(#FFF 0.85px, #FAF9F6 0.85px);
+      background-size: 26px 26px;
+      background-position: 0 0, 13px 13px;
+    }
+    .safe-bottom {
+      padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    #day-map {
+      height: 230px;
+      border-radius: 1.5rem;
+      z-index: 10;
+    }
+    .custom-marker {
+      background-color: #E91E63;
+      color: white;
+      border-radius: 50%;
+      border: 2px solid white;
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+      line-height: 22px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+    .sortable-ghost {
+      opacity: 0.35;
+      background-color: #FFF0F5 !important;
+      border: 2px dashed #E91E63 !important;
+    }
+    .sortable-drag {
+      cursor: grabbing;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+      transform: scale(1.02);
+    }
+    .drag-handle {
+      touch-action: none;
+    }
+  </style>
+</head>
+
+<body class="bkk-pattern min-h-screen text-warmGray-dark antialiased selection:bg-bkk-light">
+
+  <div class="max-w-md mx-auto min-h-screen flex flex-col relative safe-bottom">
+    
+    <!-- Header -->
+    <header class="p-5 pt-8 pb-3 bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-warmGray-200/50">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-bkk bg-bkk-light px-2.5 py-0.5 rounded-full mb-1">
+            <i data-lucide="sparkles" class="w-3 h-3"></i> 泰熱情 · 曼谷好物散策
+          </span>
+          <h1 class="text-xl font-bold text-warmGray-dark tracking-tight">曼谷自由行 🐘</h1>
+          <p class="text-[11px] text-warmGray font-medium mt-0.5">Bangkok City Tour · 5 日精選旅程</p>
+        </div>
+        <div class="w-11 h-11 rounded-2xl bg-bkk-light border border-bkk/20 shadow-inner flex items-center justify-center text-xl">
+          🛺
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 pt-4 space-y-4">
+
+      <!-- ================= TAB 1: 行程頁 ================= -->
+      <section id="tab-itinerary" class="tab-pane space-y-4">
+        <div id="day-tabs-container" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+        <div id="day-content-container" class="space-y-4"></div>
+
+        <button onclick="openAddSpotModal()" class="w-full py-3.5 bg-white border-2 border-dashed border-bkk/40 hover:border-bkk text-bkk rounded-3xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-[0.98]">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> 在今天加入新景點 / 美食
+        </button>
+      </section>
+
+      <!-- ================= TAB 2: AI 小幫手 ================= -->
+      <section id="tab-ai" class="tab-pane hidden space-y-4">
+        <!-- AI 功能卡片 -->
+        <div class="bg-gradient-to-r from-bkk to-bkk-dark rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-bkk-light">AI Travel Assistant</span>
+              <h2 class="text-lg font-bold mt-0.5">曼谷行程智慧解析小幫手 ✨</h2>
+              <p class="text-[11px] text-bkk-light mt-1 leading-relaxed">把小紅書、旅行社訂單或朋友傳的文字貼在下方，AI 會自動辨識並幫您寫入行程頁！</p>
+            </div>
+            <span class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold">AI 智慧</span>
+          </div>
+        </div>
+
+        <!-- 貼上文字輸入框 -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
+              <i data-lucide="bot" class="w-4 h-4 text-bkk"></i> 貼上行程文字
+            </h3>
+            <span class="text-[10px] text-warmGray">自動辨識時間與景點</span>
+          </div>
+
+          <textarea id="ai-input-text" rows="5" placeholder="例如：
+Day 2
+10:00 鄭王廟 (黎明寺) 拍泰服體驗
+13:30 Siam Paragon 暹羅百麗宮吃泰奶冰
+18:00 Jodd Fairs 喬德夜市吃火山排骨" class="w-full text-xs p-3 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-bkk leading-relaxed"></textarea>
+
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2">
+              <label class="text-[11px] font-bold text-warmGray-dark">指定匯入至：</label>
+              <select id="ai-target-day" class="text-xs p-1.5 rounded-xl bg-warmGray-100 border border-warmGray-200 font-bold text-bkk focus:outline-none">
+                <option value="auto">🤖 自動辨識天數</option>
+                <option value="1">Day 1 · 抵達曼谷</option>
+                <option value="2">Day 2 · 老城經典</option>
+                <option value="3">Day 3 · 潮流商圈</option>
+                <option value="4">Day 4 · 水上市場</option>
+                <option value="5">Day 5 · 伴手禮返台</option>
+              </select>
+            </div>
+            <button onclick="processAIInput()" class="px-5 py-2.5 bg-bkk text-white rounded-2xl font-bold text-xs shadow-md hover:bg-bkk-dark transition-all active:scale-95 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 開始解析並加入
+            </button>
+          </div>
+        </div>
+
+        <!-- AI 解析記錄 -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
+            <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
+              <i data-lucide="history" class="w-3.5 h-3.5 text-bkk"></i> 最近解析加入的景點
+            </h3>
+            <span class="text-[10px] text-warmGray" id="ai-status-badge">隨時待命</span>
+          </div>
+          <div id="ai-result-list" class="text-xs text-warmGray space-y-2">
+            <div class="text-center py-6 text-warmGray/70">
+              <span class="text-2xl block mb-1">📋</span>
+              貼上任何行程文字，點擊「開始解析」即可自動匯入！
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: 記帳頁 ================= -->
+      <section id="tab-expense" class="tab-pane hidden space-y-4">
+        <div class="bg-gradient-to-r from-siam to-siam-dark rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-siam-light">Total Expenses</span>
+              <h2 class="text-2xl font-bold mt-1" id="total-thb-display">฿0</h2>
+              <p class="text-xs text-siam-light mt-0.5" id="total-twd-display">約 NT$ 0 (匯率 0.95)</p>
+            </div>
+            <span class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold">泰銖記帳 👛</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <h3 class="font-bold text-sm text-warmGray-dark flex items-center gap-1.5">
+            <i data-lucide="receipt" class="w-4 h-4 text-siam"></i> 記錄一筆泰銖支出
+          </h3>
+          <div class="space-y-2.5">
+            <div class="flex gap-2">
+              <input type="text" id="exp-name" placeholder="項目名稱 (例: 泰式按摩、火山排骨)" class="flex-1 text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-siam" />
+              <select id="exp-cat" class="text-xs p-2.5 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-siam">
+                <option value="🍱 餐飲美食">🍱 餐飲美食</option>
+                <option value="💆 泰式按摩">💆 泰式按摩</option>
+                <option value="🛒 逛街夜市">🛒 逛街夜市</option>
+                <option value="🛺 交通Grab">🛺 交通Grab</option>
+                <option value="🎟️ 門票活動">🎟️ 門票活動</option>
+                <option value="🏨 酒店住宿">🏨 酒店住宿</option>
+              </select>
+            </div>
+            <div class="flex gap-2 items-center">
+              <div class="relative flex-1">
+                <span class="absolute left-3 top-2.5 text-xs text-warmGray font-bold">฿</span>
+                <input type="number" id="exp-amount" placeholder="泰銖金額 (THB)" class="w-full text-xs p-2.5 pl-7 rounded-2xl bg-warmGray-100/60 border border-warmGray-200 focus:outline-none focus:border-siam" />
+              </div>
+              <button onclick="addExpense()" class="px-5 py-2.5 bg-siam text-white rounded-2xl font-bold text-xs shadow-sm hover:bg-siam-dark transition-all active:scale-95">
+                新增
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
+          <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
+            <h3 class="font-bold text-sm text-warmGray-dark">曼谷消費明細</h3>
+            <span class="text-[11px] text-warmGray" id="exp-count-badge">0 筆記錄</span>
+          </div>
+          <div id="expense-list-container" class="space-y-2"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 底部導覽列 (3 Tabs) -->
+    <nav class="fixed bottom-5 left-4 right-4 max-w-sm mx-auto bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-lg shadow-warmGray/10 border border-warmGray-200/80 flex items-center justify-around z-50">
+      <button onclick="switchTab('itinerary')" id="nbtn-itinerary" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-bkk font-bold transition-all">
+        <i data-lucide="map-pin" class="w-5 h-5"></i>
+        <span class="text-[10px]">行程</span>
+      </button>
+      <button onclick="switchTab('ai')" id="nbtn-ai" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-warmGray font-medium transition-all">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <span class="text-[10px]">AI小幫手</span>
+      </button>
+      <button onclick="switchTab('expense')" id="nbtn-expense" class="nav-btn flex flex-col items-center gap-0.5 py-1 px-3 rounded-full text-warmGray font-medium transition-all">
+        <i data-lucide="wallet" class="w-5 h-5"></i>
+        <span class="text-[10px]">記帳</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    // 預設曼谷 5 天精選行程基礎資料 (含 GPS 座標與特色景點)
+    const BANGKOK_BASE_ITINERARY = [
+      {
+        day: 1,
+        date: "Day 1",
+        location: "素萬那普 ➔ 曼谷市區",
+        mapQuery: "Bangkok, Thailand",
+        title: "抵達天使之城 · 啟程曼谷",
+        weather: {
+          temp: "27°C ~ 33°C",
+          desc: "熱情陽光 · 午後偶陣雨",
+          pop: "30%",
+          icon: "🌤️"
+        },
+        spots: [
+          {
+            id: "bkk_1_1",
+            category: "交通",
+            catColor: "bg-blue-100 text-blue-700",
+            icon: "✈️",
+            name: "素萬那普國際機場 (BKK) ➔ 市區飯店",
+            desc: "飛抵曼谷 BKK 機場，辦理出關後至 1 樓搭乘計程車或 Grab 前往曼谷市區飯店 Check-in 休息。",
+            tags: [{ type: "buy", text: "必辦泰國 5G 吃到飽網卡" }],
+            mapQuery: "Suvarnabhumi+Airport",
+            lat: 13.6900,
+            lng: 100.7501,
+            transitNext: "搭乘機場快線 ARL 直達市區轉乘 BTS 捷運 (約 40 分鐘)"
+          },
+          {
+            id: "bkk_1_2",
+            category: "活動",
+            catColor: "bg-purple-100 text-purple-700",
+            icon: "🌃",
+            name: "Jodd Fairs 喬德夜市 (拉瑪九)",
+            desc: "曼谷最具人氣的當紅文青夜市！必吃酸辣濃郁的巨無霸火山排骨、手抓海鮮與水果西施冰沙。",
+            tags: [
+              { type: "eat", text: "必吃酸辣巨無霸火山排骨" },
+              { type: "eat", text: "必喝新鮮現剖泰國椰子水" }
+            ],
+            mapQuery: "JODD+FAIRS+Rama+9",
+            lat: 13.7567,
+            lng: 100.5664
+          }
+        ]
+      },
+      {
+        day: 2,
+        date: "Day 2",
+        location: "昭披耶河畔 · 老城區",
+        mapQuery: "Wat Arun, Bangkok",
+        title: "老城古蹟巡禮 · 泰服體驗 · 水上交通船",
+        weather: {
+          temp: "28°C ~ 34°C",
+          desc: "晴朗高溫 · 注意防曬遮陽",
+          pop: "20%",
+          icon: "☀️"
+        },
+        spots: [
+          {
+            id: "bkk_2_1",
+            category: "景點",
+            catColor: "bg-purple-100 text-purple-700",
+            icon: "🛕",
+            name: "鄭王廟 (黎明寺 Wat Arun) · 泰服體驗",
+            desc: "曼谷昭披耶河畔最壯麗地標！租借華麗泰服在巴揚塔的彩色陶瓷雕刻前拍攝復古美照。",
+            tags: [
+              { type: "photo", text: "必拍大理石塔雕華麗泰服" },
+              { type: "photo", text: "必拍昭披耶河畔日落倒影" }
+            ],
+            mapQuery: "Wat+Arun",
+            lat: 13.7437,
+            lng: 100.4888,
+            transitNext: "搭乘昭披耶河接駁渡輪 (5 泰銖) 前往對岸臥佛寺"
+          },
+          {
+            id: "bkk_2_2",
+            category: "景點",
+            catColor: "bg-purple-100 text-purple-700",
+            icon: "👑",
+            name: "曼谷大皇宮 & 玉佛寺",
+            desc: "泰國歷代王室官方宮殿，金碧輝煌的泰式傳統尖頂建築群與泰國國寶玉佛所在地。",
+            tags: [{ type: "photo", text: "必拍金光璀璨金色舍利塔" }],
+            mapQuery: "The+Grand+Palace",
+            lat: 13.7500,
+            lng: 100.4915,
+            transitNext: "搭乘嘟嘟車或計程車前往 ICONSIAM (約 20 分鐘)"
+          },
+          {
+            id: "bkk_2_3",
+            category: "購物",
+            catColor: "bg-amber-100 text-amber-700",
+            icon: "🛍️",
+            name: "ICONSIAM 暹羅天地 (室內水上市場)",
+            desc: "曼谷地標級豪華商場！B1 的 SOOKSIAM 把全泰國傳統水上市場與道地街頭小吃搬進冷氣房中。",
+            tags: [
+              { type: "eat", text: "必吃泰式芒果糯米飯" },
+              { type: "buy", text: "必買泰國頂級香氛與工藝品" }
+            ],
+            mapQuery: "ICONSIAM",
+            lat: 13.7267,
+            lng: 100.5108
+          }
+        ]
+      },
+      {
+        day: 3,
+        date: "Day 3",
+        location: "暹羅商圈 · 市中心",
+        mapQuery: "Siam Paragon, Bangkok",
+        title: "潮流暹羅商圈 · 四面佛祈福 · 頂級泰式按摩",
+        weather: {
+          temp: "27°C ~ 33°C",
+          desc: "多雲舒適 · 適合室內逛街",
+          pop: "25%",
+          icon: "⛅"
+        },
+        spots: [
+          {
+            id: "bkk_3_1",
+            category: "景點",
+            catColor: "bg-purple-100 text-purple-700",
+            icon: "🙏",
+            name: "愛侶灣四面佛 (Erawan Shrine)",
+            desc: "香火極為鼎盛的四面佛，掌管事業、感情、財富與健康，深受全球名人與信徒崇拜。",
+            tags: [{ type: "buy", text: "購買黃色萬壽菊花環與蠟燭祈福" }],
+            mapQuery: "Erawan+Shrine",
+            lat: 13.7443,
+            lng: 100.5404,
+            transitNext: "步行經由天橋前往 Siam Paragon 暹羅百麗宮 (約 5 分鐘)"
+          },
+          {
+            id: "bkk_3_2",
+            category: "購物",
+            catColor: "bg-amber-100 text-amber-700",
+            icon: "🏬",
+            name: "Siam Paragon 暹羅百麗宮 & Siam Square",
+            desc: "曼谷潮流心臟地帶！匯聚國際名牌、泰國小眾設計師服飾與超美味的美食街甜點。",
+            tags: [
+              { type: "eat", text: "必吃 After You 泰奶雪花冰" },
+              { type: "buy", text: "必逛 Gentlewoman 帆布包" }
+            ],
+            mapQuery: "Siam+Paragon",
+            lat: 13.7460,
+            lng: 100.5348,
+            transitNext: "搭乘 BTS 捷運前往 Let's Relax SPA 按摩館"
+          },
+          {
+            id: "bkk_3_3",
+            category: "活動",
+            catColor: "bg-purple-100 text-purple-700",
+            icon: "💆",
+            name: "Let's Relax SPA 頂級泰式草本精油按摩",
+            desc: "享受 120 分鐘正宗舒壓泰式古法按摩與熱草本球療法，結束後享用免費熱茶與芒果糯米飯。",
+            tags: [{ type: "eat", text: "按摩結束贈送美味芒果糯米飯" }],
+            mapQuery: "Lets+Relax+Spa+Bangkok",
+            lat: 13.7431,
+            lng: 100.5380
+          }
+        ]
+      },
+      {
+        day: 4,
+        date: "Day 4",
+        location: "丹嫩莎朵 · 美功",
+        mapQuery: "Damnoen Saduak, Thailand",
+        title: "美功鐵道市場 · 丹嫩莎朵手搖手划船",
+        weather: {
+          temp: "26°C ~ 32°C",
+          desc: "郊區晴朗 · 陽光強烈",
+          pop: "15%",
+          icon: "☀️"
+        },
+        spots: [
+          {
+            id: "bkk_4_1",
+            category: "活動",
+            catColor: "bg-emerald-100 text-emerald-700",
+            icon: "🚆",
+            name: "美功鐵道市場 (Maeklong Railway Market)",
+            desc: "世界奇觀！火車穿過熱鬧菜市場攤販時，店家在數秒內迅速收起遮雨棚，近在咫尺感受火車駛過。",
+            tags: [{ type: "photo", text: "必拍火車貼著攤位緩慢駛過瞬間" }],
+            mapQuery: "Maeklong+Railway+Market",
+            lat: 13.4074,
+            lng: 99.9987,
+            transitNext: "專車前往丹嫩莎朵水上市場 (約 20 分鐘)"
+          },
+          {
+            id: "bkk_4_2",
+            category: "活動",
+            catColor: "bg-emerald-100 text-emerald-700",
+            icon: "🛶",
+            name: "丹嫩莎朵水上市場 (手划船體驗)",
+            desc: "泰國最知名水上市場，乘坐傳統木船穿梭於縱橫交錯的水道間，向船家購買現煮米粉湯與椰子冰。",
+            tags: [
+              { type: "eat", text: "必吃船家現煮水上泰式米粉湯" },
+              { type: "photo", text: "必拍船隻交織熱鬧水上市場" }
+            ],
+            mapQuery: "Damnoen+Saduak+Floating+Market",
+            lat: 13.5186,
+            lng: 99.9578
+          }
+        ]
+      },
+      {
+        day: 5,
+        date: "Day 5",
+        location: "洽圖洽 ➔ 返台",
+        mapQuery: "Chatuchak Weekend Market",
+        title: "洽圖洽週末市集 · Big C 伴手禮大採購 · 溫暖賦歸",
+        weather: {
+          temp: "28°C ~ 34°C",
+          desc: "午後晴朗微風 · 適合採買",
+          pop: "20%",
+          icon: "🌤️"
+        },
+        spots: [
+          {
+            id: "bkk_5_1",
+            category: "購物",
+            catColor: "bg-amber-100 text-amber-700",
+            icon: "🎪",
+            name: "洽圖洽週末市集 (Chatuchak Market)",
+            desc: "全球最大戶外跳蚤市集！超過 15,000 個特色攤位，服飾配件、手工香氛與泰國編織包應有盡有。",
+            tags: [
+              { type: "buy", text: "必買泰式手工編織包與絲巾" },
+              { type: "eat", text: "必吃現切新鮮椰子冰淇淋" }
+            ],
+            mapQuery: "Chatuchak+Market",
+            lat: 13.7999,
+            lng: 100.5508,
+            transitNext: "搭乘 BTS 至 Chit Lom 站前往 Big C Supercenter (約 20 分鐘)"
+          },
+          {
+            id: "bkk_5_2",
+            category: "購物",
+            catColor: "bg-amber-100 text-amber-700",
+            icon: "🛒",
+            name: "Big C Supercenter (拉差當碧旗艦店)",
+            desc: "泰國伴手禮終極掃貨聖地！必買手標泰式茶葉、小老闆海苔、皇家蜂蜜與泰式酸辣泡麵。",
+            tags: [
+              { type: "buy", text: "必買手標泰式紅茶葉 (ChaTraMue)" },
+              { type: "buy", text: "必買泰國皇家蜂蜜與牛奶片" }
+            ],
+            mapQuery: "Big+C+Supercenter+Rajdamri",
+            lat: 13.7468,
+            lng: 100.5402,
+            transitNext: "搭乘計程車直達素萬那普 (BKK) 機場搭機返台"
+          }
+        ]
+      }
+    ];
+
+    let currentDay = 1;
+    const THB_RATE = 0.95; // 泰銖換台幣參考匯率
+    let currentLeafletMap = null;
+    let sortableInstance = null;
+
+    function initApp() {
+      renderDayTabs();
+      renderDayContent(1);
+      renderExpenses();
+      lucide.createIcons();
+    }
+
+    function getItineraryData() {
+      const saved = JSON.parse(localStorage.getItem('bangkok_itinerary_data_v1') || 'null');
+      if (saved) return saved;
+      return BANGKOK_BASE_ITINERARY;
+    }
+
+    function saveItineraryData(data) {
+      localStorage.setItem('bangkok_itinerary_data_v1', JSON.stringify(data));
+    }
+
+    function renderDayTabs() {
+      const container = document.getElementById('day-tabs-container');
+      const data = getItineraryData();
+      container.innerHTML = data.map(d => `
+        <button onclick="switchDay(${d.day})" id="day-btn-${d.day}" 
+          class="day-btn flex-shrink-0 px-3.5 py-1.5 rounded-2xl text-xs font-bold transition-all ${d.day === currentDay ? 'bg-bkk text-white shadow-md' : 'bg-white border border-warmGray-200 text-warmGray'}">
+          Day ${d.day} · ${d.location.split(' ➔ ')[0].split(' · ')[0]}
+        </button>
+      `).join('');
+    }
+
+    function renderDayContent(dayNum) {
+      currentDay = dayNum;
+      const allData = getItineraryData();
+      const data = allData.find(d => d.day === dayNum);
+      const container = document.getElementById('day-content-container');
+
+      // 每日專屬氣候卡片
+      let weatherHTML = '';
+      if (data.weather) {
+        weatherHTML = `
+          <div class="bg-white rounded-3xl p-4 shadow-sm border border-warmGray-200/70 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">${data.weather.icon}</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-sm font-bold text-warmGray-dark">${data.weather.temp}</span>
+                  <span class="text-[10px] text-bkk font-bold bg-bkk-light px-2 py-0.5 rounded-full">${data.location}</span>
+                </div>
+                <p class="text-[11px] text-warmGray mt-0.5">${data.weather.desc}</p>
+              </div>
+            </div>
+            <div class="text-right border-l border-warmGray-100 pl-3">
+              <span class="text-[10px] text-warmGray block">降雨機率</span>
+              <span class="text-xs font-bold text-warmGray-dark">${data.weather.pop}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // 可拖曳景點列表
+      let spotsHTML = data.spots.map((spot, idx) => {
+        const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(spot.mapQuery || spot.name)}`;
+        const isLast = idx === data.spots.length - 1;
+
+        let transitBadge = '';
+        if (!isLast) {
+          const transitText = spot.transitNext || "搭乘 BTS 捷運 / Grab 前往下一站 (約 10~15 分鐘)";
+          transitBadge = `
+            <div class="my-2.5 flex items-center gap-2 px-3 py-2 rounded-2xl bg-bkk-light/70 border border-bkk/20 text-bkk-dark text-[11px] shadow-sm">
+              <i data-lucide="footprints" class="w-4 h-4 flex-shrink-0 text-bkk"></i>
+              <span class="flex-1 font-medium"><b>交通銜接：</b>${transitText}</span>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="spot-item group" data-id="${spot.id || idx}">
+            <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3 relative transition-all">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="spot-index w-6 h-6 rounded-full bg-bkk text-white text-[11px] font-bold flex items-center justify-center">${idx + 1}</span>
+                  ${spot.time ? `<span class="text-xs font-bold text-bkk">${spot.time}</span>` : ''}
+                  <span class="text-xs font-bold ${spot.catColor || 'bg-bkk-light text-bkk'} px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    ${spot.icon || '📍'} ${spot.category}
+                  </span>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                  <a href="${mapUrl}" target="_blank" class="flex items-center gap-1 text-[11px] font-bold text-bkk bg-bkk-light px-2.5 py-1 rounded-full border border-bkk/20 hover:bg-bkk hover:text-white transition-colors">
+                    <i data-lucide="navigation" class="w-3 h-3"></i> 導航
+                  </a>
+                  <div class="drag-handle p-1.5 text-warmGray hover:text-bkk cursor-grab active:cursor-grabbing bg-warmGray-100 hover:bg-bkk-light rounded-xl transition-colors" title="按住拖曳調整順序">
+                    <i data-lucide="grip-vertical" class="w-4 h-4"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <a href="${mapUrl}" target="_blank" class="group inline-flex items-center gap-1.5">
+                  <h3 class="text-base font-bold text-warmGray-dark group-hover:text-bkk transition-colors">${spot.name}</h3>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-warmGray/50 group-hover:text-bkk"></i>
+                </a>
+                ${spot.desc ? `<p class="text-xs text-warmGray mt-1.5 leading-relaxed">${spot.desc}</p>` : ''}
+              </div>
+
+              ${spot.tags && spot.tags.length > 0 ? `
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  ${spot.tags.map(t => {
+                    let bg = 'bg-tag-photo';
+                    if(t.type === 'eat') bg = 'bg-tag-eat';
+                    if(t.type === 'buy') bg = 'bg-tag-buy';
+                    return `<span class="text-[10px] font-bold text-white ${bg} px-2.5 py-0.5 rounded-full shadow-sm">${t.text}</span>`;
+                  }).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            ${transitBadge}
+          </div>
+        `;
+      }).join('');
+
+      const areaMapUrl = `https://maps.google.com/?q=${encodeURIComponent(data.mapQuery || data.location)}`;
+
+      container.innerHTML = `
+        <div class="bg-gradient-to-r from-bkk to-bkk-dark rounded-3xl p-4 text-white shadow-md relative overflow-hidden">
+          <div class="flex justify-between items-start relative z-10">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-bkk-light">${data.date}</span>
+              <h2 class="text-lg font-bold mt-0.5">Day ${data.day}：${data.title}</h2>
+            </div>
+            <a href="${areaMapUrl}" target="_blank" class="bg-white/20 hover:bg-white/30 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 transition-all">
+              <span>📍 ${data.location.split(' ➔ ')[0]}</span>
+              <i data-lucide="map" class="w-3 h-3 text-bkk-light"></i>
+            </a>
+          </div>
+        </div>
+
+        ${weatherHTML}
+
+        <div class="flex items-center justify-between px-1 text-[11px] text-warmGray">
+          <span class="flex items-center gap-1"><i data-lucide="hand" class="w-3.5 h-3.5 text-bkk"></i> 按住 <b>☰</b> 可上下拖曳換順序</span>
+          <span class="font-bold text-bkk">${data.spots.length} 個行程</span>
+        </div>
+
+        <div id="sortable-spots-container" class="space-y-3">
+          ${spotsHTML}
+        </div>
+
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-warmGray-200/70 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
+              <i data-lucide="map" class="w-4 h-4 text-bkk"></i> 今日曼谷地理位置與軌跡
+            </h3>
+            <span class="text-[10px] text-bkk font-bold bg-bkk-light px-2 py-0.5 rounded-full">依最新順序連線</span>
+          </div>
+          <div id="day-map" class="w-full bg-warmGray-100 border border-warmGray-200/60 overflow-hidden"></div>
+        </div>
+      `;
+
+      lucide.createIcons();
+      initSortable();
+      renderLeafletMap(data.spots);
+    }
+
+    function initSortable() {
+      const container = document.getElementById('sortable-spots-container');
+      if (!container) return;
+
+      if (sortableInstance) {
+        sortableInstance.destroy();
+      }
+
+      sortableInstance = new Sortable(container, {
+        handle: '.drag-handle',
+        animation: 250,
+        ghostClass: 'sortable-ghost',
+        dragClass: 'sortable-drag',
+        onEnd: function (evt) {
+          const oldIndex = evt.oldIndex;
+          const newIndex = evt.newIndex;
+
+          if (oldIndex === newIndex) return;
+
+          const allData = getItineraryData();
+          const dayData = allData.find(d => d.day === currentDay);
+          if (!dayData) return;
+
+          const movedItem = dayData.spots.splice(oldIndex, 1)[0];
+          dayData.spots.splice(newIndex, 0, movedItem);
+
+          saveItineraryData(allData);
+          renderDayContent(currentDay);
+        }
+      });
+    }
+
+    function renderLeafletMap(spots) {
+      if (currentLeafletMap) {
+        currentLeafletMap.remove();
+        currentLeafletMap = null;
+      }
+
+      const validSpots = spots.filter(s => s.lat && s.lng);
+      if (validSpots.length === 0) return;
+
+      const defaultCenter = [validSpots[0].lat, validSpots[0].lng];
+      currentLeafletMap = L.map('day-map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView(defaultCenter, 12);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        maxZoom: 18,
+      }).addTo(currentLeafletMap);
+
+      const latLngs = [];
+      validSpots.forEach((spot, i) => {
+        const coord = [spot.lat, spot.lng];
+        latLngs.push(coord);
+
+        const customIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div class="custom-marker" style="width:24px; height:24px;">${i + 1}</div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12]
+        });
+
+        L.marker(coord, { icon: customIcon })
+          .addTo(currentLeafletMap)
+          .bindPopup(`<b>${i + 1}. ${spot.name}</b><br><a href="https://maps.google.com/?q=${encodeURIComponent(spot.mapQuery || spot.name)}" target="_blank" style="color:#E91E63; font-size:11px;">👉 在 Google 地圖開啟</a>`);
+      });
+
+      if (latLngs.length > 1) {
+        L.polyline(latLngs, {
+          color: '#E91E63',
+          weight: 3.5,
+          dashArray: '6, 6',
+          opacity: 0.85
+        }).addTo(currentLeafletMap);
+
+        currentLeafletMap.fitBounds(L.latLngBounds(latLngs), { padding: [35, 35] });
+      }
+    }
+
+    function switchDay(dayNum) {
+      document.querySelectorAll('.day-btn').forEach(btn => {
+        btn.classList.remove('bg-bkk', 'text-white', 'shadow-md');
+        btn.classList.add('bg-white', 'border', 'border-warmGray-200', 'text-warmGray');
+      });
+      const activeBtn = document.getElementById(`day-btn-${dayNum}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'border', 'border-warmGray-200', 'text-warmGray');
+        activeBtn.classList.add('bg-bkk', 'text-white', 'shadow-md');
+      }
+
+      renderDayContent(dayNum);
+    }
+
+    // ================= AI 小幫手智慧解析邏輯 =================
+    function processAIInput() {
+      const rawText = document.getElementById('ai-input-text').value.trim();
+      const targetDayVal = document.getElementById('ai-target-day').value;
+
+      if (!rawText) {
+        alert('請先貼上行程文字！');
+        return;
+      }
+
+      const allData = getItineraryData();
+      const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+      let targetDay = targetDayVal === 'auto' ? 1 : parseInt(targetDayVal);
+      let parsedSpots = [];
+
+      lines.forEach(line => {
+        // 檢查是否包含天數標記 (如 Day 1, D2, 第一天)
+        const dayMatch = line.match(/(?:Day|D|第)\s*([1-5一二三四五])/i);
+        if (dayMatch && targetDayVal === 'auto') {
+          let d = dayMatch[1];
+          if (d === '一') d = 1; else if (d === '二') d = 2; else if (d === '三') d = 3; else if (d === '四') d = 4; else if (d === '五') d = 5;
+          targetDay = parseInt(d) || 1;
+          return;
+        }
+
+        // 提取時間 (如 10:00, 14:30)
+        let time = '';
+        const timeMatch = line.match(/(\d{1,2}:\d{2})/);
+        if (timeMatch) {
+          time = timeMatch[1];
+        }
+
+        // 清理標題名稱
+        let cleanName = line.replace(/(\d{1,2}:\d{2})/, '').replace(/^[0-9\.\-\–\s、]+/,'').trim();
+        if (cleanName.length < 2) return;
+
+        // 分類與圖示判斷
+        let category = '景點';
+        let catColor = 'bg-purple-100 text-purple-700';
+        let icon = '📸';
+
+        if (/吃|餐|拉麵|火鍋|飯|咖啡|奶茶|排骨|甜點|After You|冰/i.test(cleanName)) {
+          category = '美食';
+          catColor = 'bg-rose-100 text-rose-700';
+          icon = '🍱';
+        } else if (/買|市集|商場|Paragon|Icon|Big C|購物|Central/i.test(cleanName)) {
+          category = '購物';
+          catColor = 'bg-amber-100 text-amber-700';
+          icon = '🛒';
+        } else if (/SPA|按摩|體驗|泰服|手划船/i.test(cleanName)) {
+          category = '活動';
+          catColor = 'bg-emerald-100 text-emerald-700';
+          icon = '✨';
+        } else if (/機場|BTS|MRT|出發|回程|交通/i.test(cleanName)) {
+          category = '交通';
+          catColor = 'bg-blue-100 text-blue-700';
+          icon = '🚆';
+        }
+
+        // 自動推算曼谷合理經緯度 (圍繞市中心微幅隨機偏移)
+        const baseLat = 13.7563 + (Math.random() - 0.5) * 0.04;
+        const baseLng = 100.5018 + (Math.random() - 0.5) * 0.04;
+
+        const spotObj = {
+          id: "ai_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+          time: time,
+          category: category,
+          catColor: catColor,
+          icon: icon,
+          name: cleanName,
+          desc: "由 AI 小幫手智慧解析加入之推薦行程",
+          tags: [{ type: category === '美食' ? 'eat' : 'photo', text: "✨ AI 推薦" }],
+          mapQuery: cleanName + ", Bangkok",
+          lat: baseLat,
+          lng: baseLng,
+          transitNext: "搭乘 BTS / Grab 前往"
+        };
+
+        parsedSpots.push(spotObj);
+      });
+
+      if (parsedSpots.length === 0) {
+        alert('未能識別出景點，請確認貼上的文字格式！');
+        return;
+      }
+
+      // 將解析出的景點加入目標天數
+      const targetDayObj = allData.find(d => d.day === targetDay) || allData[0];
+      targetDayObj.spots.push(...parsedSpots);
+      saveItineraryData(allData);
+
+      // 更新 AI 記錄 UI
+      document.getElementById('ai-status-badge').innerText = `成功加入 ${parsedSpots.length} 個行程`;
+      document.getElementById('ai-status-badge').className = "text-[10px] text-bkk font-bold bg-bkk-light px-2 py-0.5 rounded-full";
+
+      const resultContainer = document.getElementById('ai-result-list');
+      resultContainer.innerHTML = parsedSpots.map(s => `
+        <div class="flex items-center justify-between p-2.5 rounded-2xl bg-warmGray-100 border border-warmGray-200">
+          <div class="flex items-center gap-2">
+            <span>${s.icon}</span>
+            <div>
+              <div class="font-bold text-warmGray-dark">${s.name}</div>
+              <span class="text-[10px] text-warmGray">已加入至 Day ${targetDayObj.day} · ${s.category}</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-bkk">✓ 已匯入</span>
+        </div>
+      `).join('');
+
+      document.getElementById('ai-input-text').value = '';
+      alert(`🎉 成功解析並將 ${parsedSpots.length} 個景點加入至 Day ${targetDayObj.day}！請切換至「行程頁」查看。`);
+    }
+
+    // ================= 泰銖記帳功能 =================
+    function getExpenses() {
+      return JSON.parse(localStorage.getItem('bangkok_expenses') || '[]');
+    }
+
+    function addExpense() {
+      const name = document.getElementById('exp-name').value.trim();
+      const cat = document.getElementById('exp-cat').value;
+      const amount = parseFloat(document.getElementById('exp-amount').value);
+
+      if (!name || isNaN(amount) || amount <= 0) {
+        alert('請輸入正確的項目名稱與泰銖金額！');
+        return;
+      }
+
+      const expenses = getExpenses();
+      expenses.unshift({
+        id: Date.now(),
+        name,
+        cat,
+        amount,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      localStorage.setItem('bangkok_expenses', JSON.stringify(expenses));
+      document.getElementById('exp-name').value = '';
+      document.getElementById('exp-amount').value = '';
+      renderExpenses();
+    }
+
+    function deleteExpense(id) {
+      const expenses = getExpenses().filter(e => e.id !== id);
+      localStorage.setItem('bangkok_expenses', JSON.stringify(expenses));
+      renderExpenses();
+    }
+
+    function renderExpenses() {
+      const expenses = getExpenses();
+      const listContainer = document.getElementById('expense-list-container');
+      const badge = document.getElementById('exp-count-badge');
+      const totalThbEl = document.getElementById('total-thb-display');
+      const totalTwdEl = document.getElementById('total-twd-display');
+
+      let totalThb = 0;
+      badge.innerText = `${expenses.length} 筆記錄`;
+
+      if (expenses.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-6 text-warmGray text-xs">
+            <span class="text-2xl block mb-1">💸</span>
+            目前還沒有記帳記錄，開始記錄曼谷的第一筆消費吧！
+          </div>
+        `;
+      } else {
+        listContainer.innerHTML = expenses.map(e => {
+          totalThb += e.amount;
+          const twd = Math.round(e.amount * THB_RATE);
+          return `
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-warmGray-100/50 border border-warmGray-200/50">
+              <div class="flex items-center gap-2.5">
+                <span class="text-base">${e.cat.split(' ')[0]}</span>
+                <div>
+                  <h4 class="text-xs font-bold text-warmGray-dark">${e.name}</h4>
+                  <span class="text-[10px] text-warmGray">${e.cat.split(' ')[1]} · ${e.time}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="text-right">
+                  <div class="text-xs font-bold text-warmGray-dark">฿${e.amount.toLocaleString()}</div>
+                  <div class="text-[10px] text-warmGray">NT$ ${twd.toLocaleString()}</div>
+                </div>
+                <button onclick="deleteExpense(${e.id})" class="text-warmGray/50 hover:text-red-500 text-xs font-bold p-1">✕</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      totalThbEl.innerText = `฿${totalThb.toLocaleString()}`;
+      totalTwdEl.innerText = `約 NT$ ${Math.round(totalThb * THB_RATE).toLocaleString()} (匯率 ${THB_RATE})`;
+    }
+
+    // ================= 自訂景點 Modal =================
+    function openAddSpotModal() {
+      document.getElementById('add-spot-modal').classList.remove('hidden');
+    }
+
+    function closeAddSpotModal() {
+      document.getElementById('add-spot-modal').classList.add('hidden');
+      document.getElementById('new-spot-name').value = '';
+      document.getElementById('new-spot-tag').value = '';
+      document.getElementById('new-spot-desc').value = '';
+    }
+
+    function saveCustomSpot() {
+      const name = document.getElementById('new-spot-name').value.trim();
+      const cat = document.getElementById('new-spot-cat').value;
+      const tagText = document.getElementById('new-spot-tag').value.trim();
+      const desc = document.getElementById('new-spot-desc').value.trim();
+
+      if (!name) {
+        alert('請輸入景點或餐廳名稱！');
+        return;
+      }
+
+      let catColor = 'bg-emerald-100 text-emerald-700';
+      let icon = '✨';
+      if (cat === '食物') { catColor = 'bg-rose-100 text-rose-700'; icon = '🍱'; }
+      if (cat === '景點') { catColor = 'bg-purple-100 text-purple-700'; icon = '📸'; }
+      if (cat === '購物') { catColor = 'bg-amber-100 text-amber-700'; icon = '🛒'; }
+      if (cat === '交通') { catColor = 'bg-blue-100 text-blue-700'; icon = '🚆'; }
+      if (cat === '酒店') { catColor = 'bg-blue-100 text-blue-700'; icon = '🏨'; }
+
+      const allData = getItineraryData();
+      const currentDayObj = allData.find(d => d.day === currentDay);
+
+      const refLat = (currentDayObj.spots.length > 0 && currentDayObj.spots[0].lat) ? currentDayObj.spots[0].lat + (Math.random() - 0.5) * 0.01 : 13.75;
+      const refLng = (currentDayObj.spots.length > 0 && currentDayObj.spots[0].lng) ? currentDayObj.spots[0].lng + (Math.random() - 0.5) * 0.01 : 100.50;
+
+      const newSpot = {
+        id: "custom_" + Date.now(),
+        category: cat,
+        catColor: catColor,
+        icon: icon,
+        name: name,
+        desc: desc || '旅人自訂推薦打卡點',
+        tags: tagText ? [{ type: cat === '食物' ? 'eat' : 'buy', text: tagText }] : [],
+        mapQuery: name + ", Bangkok",
+        lat: refLat,
+        lng: refLng,
+        transitNext: "搭乘 BTS / Grab 前往"
+      };
+
+      currentDayObj.spots.push(newSpot);
+      saveItineraryData(allData);
+
+      closeAddSpotModal();
+      renderDayContent(currentDay);
+    }
+
+    // 切換底部主要 Tab
+    function switchTab(tabKey) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tabKey}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-bkk', 'font-bold');
+        btn.classList.add('text-warmGray', 'font-medium');
+      });
+
+      const activeBtn = document.getElementById(`nbtn-${tabKey}`);
+      activeBtn.classList.remove('text-warmGray', 'font-medium');
+      activeBtn.classList.add('text-bkk', 'font-bold');
+
+      if (tabKey === 'itinerary') {
+        renderDayTabs();
+        renderDayContent(currentDay);
+        if (currentLeafletMap) {
+          setTimeout(() => { currentLeafletMap.invalidateSize(); }, 200);
+        }
+      }
+    }
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
