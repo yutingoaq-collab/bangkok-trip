@@ -155,7 +155,6 @@
           </div>
         </div>
 
-        <!-- 手動新增待買項目 -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
           <h3 class="font-bold text-xs text-warmGray-dark flex items-center gap-1.5">
             <i data-lucide="plus-circle" class="w-4 h-4 text-amber-500"></i> 新增待買物品
@@ -180,15 +179,12 @@
           </div>
         </div>
 
-        <!-- 清單列表 -->
         <div class="bg-white rounded-3xl p-5 shadow-sm border border-warmGray-200/70 space-y-3">
           <div class="flex justify-between items-center pb-2 border-b border-warmGray-100">
             <h3 class="font-bold text-xs text-warmGray-dark">購物清單明細</h3>
             <button onclick="clearCompletedWishlist()" class="text-[10px] text-warmGray hover:text-red-500">清除已完成項目</button>
           </div>
-          <div id="wishlist-container" class="space-y-2">
-            <!-- 由 JS 動態注入 -->
-          </div>
+          <div id="wishlist-container" class="space-y-2"></div>
         </div>
       </section>
 
@@ -422,6 +418,7 @@ Day 2 10:00 鄭王廟拍泰服
             name: "素萬那普機場 (BKK) ➔ 曼谷城市套房飯店",
             desc: "16:05 降落曼谷素萬那普機場，出關領取行李後，搭乘機場快線 ARL 或預約 Grab 前往「曼谷城市套房飯店」辦理入住手續。",
             tags: [{ type: "buy", text: "出關領取泰國 5G 網卡" }],
+            userNote: "",
             mapQuery: "Bangkok+City+Suite+Hotel",
             lat: 13.7589,
             lng: 100.5218,
@@ -439,6 +436,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "eat", text: "必吃酸辣巨無霸火山排骨" },
               { type: "eat", text: "必喝新鮮現剖泰國椰子水" }
             ],
+            userNote: "排隊名店火山排骨建議早點拿號碼牌",
             mapQuery: "JODD+FAIRS+Rama+9",
             lat: 13.7567,
             lng: 100.5664
@@ -469,6 +467,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "photo", text: "必拍大理石塔雕華麗泰服" },
               { type: "photo", text: "必拍昭披耶河畔日落倒影" }
             ],
+            userNote: "",
             mapQuery: "Wat+Arun",
             lat: 13.7437,
             lng: 100.4888,
@@ -482,6 +481,7 @@ Day 2 10:00 鄭王廟拍泰服
             name: "曼谷大皇宮 & 玉佛寺",
             desc: "泰國歷代王室官方宮殿，金碧輝煌的泰式傳統尖頂建築群與泰國國寶玉佛所在地。",
             tags: [{ type: "photo", text: "必拍金光璀璨金色舍利塔" }],
+            userNote: "需穿著過膝長褲或長裙，禁止無袖",
             mapQuery: "The+Grand+Palace",
             lat: 13.7500,
             lng: 100.4915,
@@ -498,6 +498,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "eat", text: "必吃泰式芒果糯米飯" },
               { type: "buy", text: "必買泰國頂級香氛與工藝品" }
             ],
+            userNote: "",
             mapQuery: "ICONSIAM",
             lat: 13.7267,
             lng: 100.5108
@@ -525,6 +526,7 @@ Day 2 10:00 鄭王廟拍泰服
             name: "愛侶灣四面佛 (Erawan Shrine)",
             desc: "香火極為鼎盛的四面佛，掌管事業、感情、財富與健康，深受全球名人與信徒崇拜。",
             tags: [{ type: "buy", text: "購買黃色萬壽菊花環與蠟燭祈福" }],
+            userNote: "順時針參拜四面，誠心祈求",
             mapQuery: "Erawan+Shrine",
             lat: 13.7443,
             lng: 100.5404,
@@ -541,6 +543,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "eat", text: "必吃 After You 泰奶雪花冰" },
               { type: "buy", text: "必逛 Gentlewoman 帆布包" }
             ],
+            userNote: "",
             mapQuery: "Siam+Paragon",
             lat: 13.7460,
             lng: 100.5348,
@@ -554,6 +557,7 @@ Day 2 10:00 鄭王廟拍泰服
             name: "Let's Relax SPA 頂級泰式草本精油按摩",
             desc: "享受 120 分鐘正宗舒壓泰式古法按摩與熱草本球療法，結束後享用免費熱茶與芒果糯米飯。",
             tags: [{ type: "eat", text: "按摩結束贈送美味芒果糯米飯" }],
+            userNote: "",
             mapQuery: "Lets+Relax+Spa+Bangkok",
             lat: 13.7431,
             lng: 100.5380
@@ -581,6 +585,7 @@ Day 2 10:00 鄭王廟拍泰服
             name: "美功鐵道市場 (Maeklong Railway Market)",
             desc: "世界奇觀！火車穿過熱鬧菜市場攤販時，店家在數秒內迅速收起遮雨棚，近在咫尺感受火車駛過。",
             tags: [{ type: "photo", text: "必拍火車貼著攤位緩慢駛過瞬間" }],
+            userNote: "",
             mapQuery: "Maeklong+Railway+Market",
             lat: 13.4074,
             lng: 99.9987,
@@ -597,6 +602,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "eat", text: "必吃船家現煮水上泰式米粉湯" },
               { type: "photo", text: "必拍船隻交織熱鬧水上市場" }
             ],
+            userNote: "",
             mapQuery: "Damnoen+Saduak+Floating+Market",
             lat: 13.5186,
             lng: 99.9578
@@ -627,6 +633,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "buy", text: "必買泰式手工編織包與絲巾" },
               { type: "eat", text: "必吃現切新鮮椰子冰淇淋" }
             ],
+            userNote: "建議隨身帶現金，多數攤位不收信用卡",
             mapQuery: "Chatuchak+Market",
             lat: 13.7999,
             lng: 100.5508,
@@ -643,6 +650,7 @@ Day 2 10:00 鄭王廟拍泰服
               { type: "buy", text: "必買手標泰式紅茶葉 (ChaTraMue)" },
               { type: "buy", text: "必買泰國皇家蜂蜜與牛奶片" }
             ],
+            userNote: "滿 2000 泰銖可至服務台辦理退稅手續",
             mapQuery: "Big+C+Supercenter+Rajdamri",
             lat: 13.7468,
             lng: 100.5402,
@@ -652,7 +660,6 @@ Day 2 10:00 鄭王廟拍泰服
       }
     ];
 
-    // 預設必買清單
     const DEFAULT_WISHLIST = [
       { id: "w_1", name: "手標泰式紅茶包 (ChaTraMue 金罐/紅罐)", cat: "🎁 伴手禮", note: "Big C / 經典泰奶必備", done: false },
       { id: "w_2", name: "Gentlewoman 經典帆布托特包", cat: "👗 服飾包包", note: "Siam Square 旗艦店購入", done: false },
@@ -674,13 +681,13 @@ Day 2 10:00 鄭王廟拍泰服
     }
 
     function getItineraryData() {
-      const saved = JSON.parse(localStorage.getItem('bangkok_itinerary_data_v3') || 'null');
+      const saved = JSON.parse(localStorage.getItem('bangkok_itinerary_data_v4') || 'null');
       if (saved) return saved;
       return BANGKOK_BASE_ITINERARY;
     }
 
     function saveItineraryData(data) {
-      localStorage.setItem('bangkok_itinerary_data_v3', JSON.stringify(data));
+      localStorage.setItem('bangkok_itinerary_data_v4', JSON.stringify(data));
     }
 
     function renderDayTabs() {
@@ -692,6 +699,36 @@ Day 2 10:00 鄭王廟拍泰服
           Day ${d.day} · ${d.location.split(' ➔ ')[0].split(' · ')[0]}
         </button>
       `).join('');
+    }
+
+    // 刪除行程景點
+    function deleteSpot(dayNum, spotIdx) {
+      const allData = getItineraryData();
+      const dayData = allData.find(d => d.day === dayNum);
+      if (!dayData) return;
+
+      const spotName = dayData.spots[spotIdx].name;
+      if (confirm(`確定要刪除「${spotName}」這個行程嗎？`)) {
+        dayData.spots.splice(spotIdx, 1);
+        saveItineraryData(allData);
+        renderDayContent(dayNum);
+      }
+    }
+
+    // 編輯/更新景點個人備註
+    function editSpotNote(dayNum, spotIdx) {
+      const allData = getItineraryData();
+      const dayData = allData.find(d => d.day === dayNum);
+      if (!dayData) return;
+
+      const currentNote = dayData.spots[spotIdx].userNote || '';
+      const newNote = prompt(`請輸入「${dayData.spots[spotIdx].name}」的自訂備註：`, currentNote);
+
+      if (newNote !== null) {
+        dayData.spots[spotIdx].userNote = newNote.trim();
+        saveItineraryData(allData);
+        renderDayContent(dayNum);
+      }
     }
 
     function renderDayContent(dayNum) {
@@ -723,7 +760,7 @@ Day 2 10:00 鄭王廟拍泰服
         `;
       }
 
-      // 航班卡片 (Day 1)
+      // 航班卡片
       let flightHTML = '';
       if (data.flight) {
         flightHTML = `
@@ -769,7 +806,7 @@ Day 2 10:00 鄭王廟拍泰服
         `;
       }
 
-      // 飯店卡片 (Day 1)
+      // 飯店卡片
       let hotelHTML = '';
       if (data.hotel) {
         hotelHTML = `
@@ -802,7 +839,7 @@ Day 2 10:00 鄭王廟拍泰服
         `;
       }
 
-      // 可拖曳景點列表
+      // 景點列表 (含刪除與自訂備註按鈕)
       let spotsHTML = data.spots.map((spot, idx) => {
         const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(spot.mapQuery || spot.name)}`;
         const isLast = idx === data.spots.length - 1;
@@ -830,10 +867,18 @@ Day 2 10:00 鄭王廟拍泰服
                   </span>
                 </div>
                 
-                <div class="flex items-center gap-2">
+                <!-- 導航、刪除、拖曳把手 -->
+                <div class="flex items-center gap-1.5">
                   <a href="${mapUrl}" target="_blank" class="flex items-center gap-1 text-[11px] font-bold text-bkk bg-bkk-light px-2.5 py-1 rounded-full border border-bkk/20 hover:bg-bkk hover:text-white transition-colors">
                     <i data-lucide="navigation" class="w-3 h-3"></i> 導航
                   </a>
+                  
+                  <!-- 刪除按鈕 -->
+                  <button onclick="deleteSpot(${dayNum}, ${idx})" class="p-1.5 text-warmGray hover:text-red-500 bg-warmGray-100 hover:bg-red-50 rounded-xl transition-colors" title="刪除行程">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+
+                  <!-- 拖曳把手 -->
                   <div class="drag-handle p-1.5 text-warmGray hover:text-bkk cursor-grab active:cursor-grabbing bg-warmGray-100 hover:bg-bkk-light rounded-xl transition-colors" title="按住拖曳調整順序">
                     <i data-lucide="grip-vertical" class="w-4 h-4"></i>
                   </div>
@@ -858,6 +903,17 @@ Day 2 10:00 鄭王廟拍泰服
                   }).join('')}
                 </div>
               ` : ''}
+
+              <!-- 自訂備註區塊 (點擊直接編輯) -->
+              <div onclick="editSpotNote(${dayNum}, ${idx})" class="cursor-pointer p-2.5 rounded-2xl bg-warmGray-100/70 hover:bg-warmGray-100 border border-warmGray-200/50 flex items-start justify-between gap-2 transition-colors">
+                <div class="flex items-start gap-1.5 text-[11px]">
+                  <span class="text-xs">📝</span>
+                  <div class="flex-1">
+                    ${spot.userNote ? `<span class="text-warmGray-dark font-medium leading-relaxed">${spot.userNote}</span>` : `<span class="text-warmGray/60 italic">+ 點此新增個人筆記 / 預約備註...</span>`}
+                  </div>
+                </div>
+                <i data-lucide="edit-3" class="w-3.5 h-3.5 text-warmGray/50 flex-shrink-0 mt-0.5"></i>
+              </div>
             </div>
 
             ${transitBadge}
@@ -886,7 +942,7 @@ Day 2 10:00 鄭王廟拍泰服
         ${hotelHTML}
 
         <div class="flex items-center justify-between px-1 text-[11px] text-warmGray">
-          <span class="flex items-center gap-1"><i data-lucide="hand" class="w-3.5 h-3.5 text-bkk"></i> 按住 <b>☰</b> 可上下拖曳換順序</span>
+          <span class="flex items-center gap-1"><i data-lucide="hand" class="w-3.5 h-3.5 text-bkk"></i> 按住 <b>☰</b> 拖曳排序 · 點 <b>📝</b> 編輯備註</span>
           <span class="font-bold text-bkk">${data.spots.length} 個行程</span>
         </div>
 
@@ -1004,13 +1060,13 @@ Day 2 10:00 鄭王廟拍泰服
       renderDayContent(dayNum);
     }
 
-    // ================= 待買清單 (Wishlist) 功能 =================
+    // ================= 待買清單 (Wishlist) =================
     function getWishlist() {
-      return JSON.parse(localStorage.getItem('bangkok_wishlist_v1') || JSON.stringify(DEFAULT_WISHLIST));
+      return JSON.parse(localStorage.getItem('bangkok_wishlist_v2') || JSON.stringify(DEFAULT_WISHLIST));
     }
 
     function saveWishlist(list) {
-      localStorage.setItem('bangkok_wishlist_v1', JSON.stringify(list));
+      localStorage.setItem('bangkok_wishlist_v2', JSON.stringify(list));
       renderWishlist();
     }
 
@@ -1093,7 +1149,7 @@ Day 2 10:00 鄭王廟拍泰服
       }
     }
 
-    // ================= AI 小幫手智慧解析邏輯 (支援 行程 + 待買清單 自動分流) =================
+    // ================= AI 小幫手智慧解析 =================
     function processAIInput() {
       const rawText = document.getElementById('ai-input-text').value.trim();
       const targetDayVal = document.getElementById('ai-target-day').value;
@@ -1213,6 +1269,7 @@ Day 2 10:00 鄭王廟拍泰服
           icon: icon,
           name: cleanName,
           desc: "由 AI 小幫手智慧解析加入之推薦行程",
+          userNote: "",
           tags: [{ type: category === '美食' ? 'eat' : 'photo', text: "✨ AI 推薦" }],
           mapQuery: cleanName + ", Bangkok",
           lat: baseLat,
@@ -1264,7 +1321,7 @@ Day 2 10:00 鄭王廟拍泰服
           time: "已預付"
         }
       ];
-      return JSON.parse(localStorage.getItem('bangkok_expenses_v3') || JSON.stringify(defaultExpenses));
+      return JSON.parse(localStorage.getItem('bangkok_expenses_v4') || JSON.stringify(defaultExpenses));
     }
 
     function addExpense() {
@@ -1286,7 +1343,7 @@ Day 2 10:00 鄭王廟拍泰服
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       });
 
-      localStorage.setItem('bangkok_expenses_v3', JSON.stringify(expenses));
+      localStorage.setItem('bangkok_expenses_v4', JSON.stringify(expenses));
       document.getElementById('exp-name').value = '';
       document.getElementById('exp-amount').value = '';
       renderExpenses();
@@ -1294,7 +1351,7 @@ Day 2 10:00 鄭王廟拍泰服
 
     function deleteExpense(id) {
       const expenses = getExpenses().filter(e => e.id !== id);
-      localStorage.setItem('bangkok_expenses_v3', JSON.stringify(expenses));
+      localStorage.setItem('bangkok_expenses_v4', JSON.stringify(expenses));
       renderExpenses();
     }
 
@@ -1388,6 +1445,7 @@ Day 2 10:00 鄭王廟拍泰服
         icon: icon,
         name: name,
         desc: desc || '旅人自訂推薦打卡點',
+        userNote: "",
         tags: tagText ? [{ type: cat === '美食' ? 'eat' : 'buy', text: tagText }] : [],
         mapQuery: name + ", Bangkok",
         lat: refLat,
